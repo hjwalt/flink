@@ -210,7 +210,15 @@ public class JdbcBatchingOutputFormat<
     }
 
     protected void attemptFlush() throws SQLException {
-        jdbcStatementExecutor.executeBatch();
+        try {
+            jdbcStatementExecutor.executeBatch();
+        } catch (SQLException e) {
+            if (executionOptions.getBatchSize() > 1) {
+                throw e;
+            } else {
+                LOG.error("Single batch flush error", e);
+            }
+        }
     }
 
     /** Executes prepared statement and closes all resources of this instance. */

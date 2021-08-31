@@ -70,11 +70,19 @@ class KeyedBatchStatementExecutor<T, K> implements JdbcBatchStatementExecutor<T>
     @Override
     public void executeBatch() throws SQLException {
         if (!batch.isEmpty()) {
-            for (K entry : batch) {
-                parameterSetter.accept(st, entry);
-                st.addBatch();
+            try {
+                for (K entry : batch) {
+                    parameterSetter.accept(st, entry);
+                    st.addBatch();
+                }
+                st.executeBatch();
+            } catch (SQLException e) {
+                if (batch.size() == 1) {
+                    LOG.error("JDBC batch exception", e);
+                } else {
+                    throw e;
+                }
             }
-            st.executeBatch();
             batch.clear();
         }
     }

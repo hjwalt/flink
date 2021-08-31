@@ -166,7 +166,11 @@ public class JdbcBatchingOutputFormat<
                 flush();
             }
         } catch (Exception e) {
-            throw new IOException("Writing records to JDBC failed.", e);
+            if (executionOptions.getBatchSize() != 1) {
+                throw new IOException("Writing records to JDBC failed.", e);
+            } else {
+                LOG.error("Writing records to JDBC failed.", e);
+            }
         }
     }
 
@@ -229,7 +233,9 @@ public class JdbcBatchingOutputFormat<
                     flush();
                 } catch (Exception e) {
                     LOG.warn("Writing records to JDBC failed.", e);
-                    throw new RuntimeException("Writing records to JDBC failed.", e);
+                    if (executionOptions == null || executionOptions.getBatchSize() != 1) {
+                        throw new RuntimeException("Writing records to JDBC failed.", e);
+                    }
                 }
             }
 

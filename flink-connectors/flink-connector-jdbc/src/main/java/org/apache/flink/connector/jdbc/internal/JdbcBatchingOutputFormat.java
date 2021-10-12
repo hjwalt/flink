@@ -211,10 +211,10 @@ public class JdbcBatchingOutputFormat<
 
     protected void attemptFlush() throws SQLException {
         try {
-            LOG.info(
-                    String.format(
-                            "JDBC update batch count: %d, batch size: %d",
-                            batchCount, executionOptions.getBatchSize()));
+            //            LOG.info(
+            //                    String.format(
+            //                            "JDBC update batch count: %d, batch size: %d",
+            //                            batchCount, executionOptions.getBatchSize()));
             jdbcStatementExecutor.executeBatch();
         } catch (SQLException e) {
             if (executionOptions.getBatchSize() > 1) {

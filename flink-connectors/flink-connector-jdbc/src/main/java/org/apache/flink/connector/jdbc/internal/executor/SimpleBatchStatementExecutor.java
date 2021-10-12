@@ -77,6 +77,7 @@ class SimpleBatchStatementExecutor<T, V> implements JdbcBatchStatementExecutor<T
         } catch (SQLException ex) {
             batch.clear();
             st.clearBatch();
+            st.clearParameters();
             throw ex;
         }
     }

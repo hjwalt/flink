@@ -81,6 +81,7 @@ class KeyedBatchStatementExecutor<T, K> implements JdbcBatchStatementExecutor<T>
         } catch (SQLException ex) {
             batch.clear();
             st.clearBatch();
+            st.clearParameters();
             throw ex;
         }
     }

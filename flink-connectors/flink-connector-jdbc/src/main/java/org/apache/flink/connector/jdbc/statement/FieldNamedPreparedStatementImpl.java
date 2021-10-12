@@ -62,7 +62,13 @@ public class FieldNamedPreparedStatementImpl implements FieldNamedPreparedStatem
 
     @Override
     public int[] executeBatch() throws SQLException {
-        return statement.executeBatch();
+        try {
+            return statement.executeBatch();
+        } catch (SQLException ex) {
+            statement.clearBatch();
+            statement.clearParameters();
+            throw ex;
+        }
     }
 
     @Override

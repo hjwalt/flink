@@ -58,11 +58,16 @@ public final class TableBufferedStatementExecutor implements JdbcBatchStatementE
 
     @Override
     public void executeBatch() throws SQLException {
-        for (RowData value : buffer) {
-            statementExecutor.addToBatch(value);
+        try {
+            for (RowData value : buffer) {
+                statementExecutor.addToBatch(value);
+            }
+            statementExecutor.executeBatch();
+            buffer.clear();
+        } catch (SQLException ex) {
+            buffer.clear();
+            throw ex;
         }
-        statementExecutor.executeBatch();
-        buffer.clear();
     }
 
     @Override
